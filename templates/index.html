@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liver Tumor Segmentation </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Decorations -->
+    <div class="bg-decoration">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                </div>
+                <h1 class="nav-title">Liver Tumor Segmentation</h1>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="nav-link active">Tool</a>
+                <a href="#about-section" class="nav-link">About</a>
+                <a href="#results" class="nav-link">Results</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+           
+            <h1 class="hero-title">
+                Advanced <span class="gradient-text">Liver Tumor</span><br>
+                Segmentation Tool
+            </h1>
+            <p class="hero-description">
+                Precision medical image analysis powered by deep learning. 
+                Get accurate tumor segmentation results in seconds.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- User Flow Indicator -->
+        <div class="flow-indicator">
+            <div class="flow-step active" id="step-upload">
+                <div class="flow-icon-wrapper">
+                    <div class="flow-icon">📤</div>
+                    <div class="flow-check">✓</div>
+                </div>
+                <span>Upload</span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step" id="step-process">
+                <div class="flow-icon-wrapper">
+                    <div class="flow-icon">⚙️</div>
+                    <div class="flow-check">✓</div>
+                </div>
+                <span>Process</span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step" id="step-download">
+                <div class="flow-icon-wrapper">
+                    <div class="flow-icon">📥</div>
+                    <div class="flow-check">✓</div>
+                </div>
+                <span>Download</span>
+            </div>
+        </div>
+
+        <!-- Panels Container -->
+        <div class="panels-container" id="results">
+            <!-- Upload Panel -->
+            <div class="panel upload-panel glass-card">
+                <div class="panel-header-gradient">
+                    <div class="panel-header-content">
+                        <div class="panel-icon">📁</div>
+                        <h2>Upload Image</h2>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="file-input" accept="image/png,image/jpeg,image/jpg" hidden>
+                        <div class="upload-icon-wrapper">
+                            <div class="upload-icon">📤</div>
+                            <div class="upload-pulse"></div>
+                        </div>
+                        <p class="upload-text">Drag & Drop or Click to Upload</p>
+                        <p class="upload-subtext">Supported formats: PNG, JPG (Max 16MB)</p>
+                    </div>
+                    <div class="image-preview-container" id="image-preview-container" style="display: none;">
+                        <div class="preview-overlay">
+                            <img id="image-preview" src="" alt="Preview">
+                            <button class="btn-remove" id="btn-remove">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn-primary btn-glow" id="btn-generate" disabled>
+                        <span class="btn-text">Generate Result</span>
+                        <span class="btn-icon">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result Panel -->
+            <div class="panel result-panel glass-card">
+                <div class="panel-header-gradient result-header">
+                    <div class="panel-header-content">
+                        <div class="panel-icon">🔬</div>
+                        <h2>Segmented Output</h2>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="result-placeholder" id="result-placeholder">
+                        <div class="placeholder-animation">
+                            <div class="placeholder-icon">🔬</div>
+                            <div class="placeholder-rings"></div>
+                        </div>
+                        <p>Result will appear here</p>
+                        <p class="placeholder-subtext">Upload an image to get started</p>
+                    </div>
+                    <div class="loading-container" id="loading-container" style="display: none;">
+                        <div class="loading-wrapper">
+                            <div class="loading-spinner"></div>
+                            <div class="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <p class="loading-text">Processing your image...</p>
+                        <p class="loading-subtext">AI is analyzing the medical scan</p>
+                    </div>
+                    <div class="result-image-container" id="result-image-container" style="display: none;">
+                        <div class="result-badge">Segmented</div>
+                        <img id="result-image" src="" alt="Segmented Result">
+                    </div>
+                    <!-- Probability Display Section -->
+                    <div class="probability-container" id="probability-container" style="display: none;">
+                        
+                        <div class="prob-header">
+                            <span class="prob-title">🎯 Detection Confidence</span>
+                            <span class="prob-badge" id="overall-confidence">--</span>
+                        </div>
+
+                        <div class="prob-item">
+                            <div class="prob-label">
+                                <span>🟤 Liver</span>
+                                <span class="prob-value" id="liver-prob-text">0%</span>
+                            </div>
+                            <div class="prob-bar-bg">
+                                <div class="prob-bar liver-bar" id="liver-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="prob-item">
+                            <div class="prob-label">
+                                <span>🔴 Tumor</span>
+                                <span class="prob-value" id="tumor-prob-text">0%</span>
+                            </div>
+                            <div class="prob-bar-bg">
+                                <div class="prob-bar tumor-bar" id="tumor-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="dice-scores">
+                            <div class="dice-card">
+                                <span class="dice-label">Liver DSC</span>
+                                <span class="dice-value" id="liver-dsc">--</span>
+                            </div>
+                            <div class="dice-card">
+                                <span class="dice-label">Tumor DSC</span>
+                                <span class="dice-value" id="tumor-dsc">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-actions" id="result-actions" style="display: none;">
+                        <button class="btn-secondary btn-glow" id="btn-download">
+                            <span>📥</span>
+                            Download Result
+                        </button>
+                        <button class="btn-outline" id="btn-new-upload">
+                            <span>🔄</span>
+                            Upload New Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <section class="about-section" id="about-section">
+
+            <!-- Header -->
+            <div class="section-header">
+                <div class="section-badge">About AC-Net</div>
+                <h2 class="section-title">Advanced Medical AI Technology</h2>
+                <p class="section-description">
+                    Revolutionary deep learning framework for precise liver tumor segmentation
+                </p>
+            </div>
+        
+            <!-- Main Content -->
+            <div class="about-main-container">
+        
+                <!-- Image -->
+                <div class="about-image-main">
+                    <div class="image-label">3D Medical Visualization</div>
+                    <div class="medical-image-container">
+                        <img 
+                        src="{{ url_for('static', filename='images/liver.jpg') }}" 
+                        alt="Liver Anatomy" 
+                        class="medical-anatomy-image">
+                    
+                    </div>
+                </div>
+        
+                <!-- Cards -->
+                <div class="about-content-main">
+        
+                    <!-- Purpose Card -->
+                    <div class="about-feature-card">
+                        <div class="feature-header">
+                            
+                            <h3> Purpose</h3>
+                        </div>
+        
+                        <p>
+                            This project addresses major challenges in liver cancer diagnosis through
+                            <strong class="highlight">Attention Connect Network (AC-Net)</strong>.
+                        </p>
+        
+                        <div class="feature-points">
+                            <div class="feature-point">
+                                <div class="point-number">01</div>
+                                <div>
+                                    <h5>Clinical Inefficiency</h5>
+                                    <p>Manual segmentation is time-consuming and error-prone.</p>
+                                </div>
+                            </div>
+        
+                            <div class="feature-point">
+                                <div class="point-number">02</div>
+                                <div>
+                                    <h5>Inconsistency</h5>
+                                    <p>Segmentation varies between radiologists.</p>
+                                </div>
+                            </div>
+        
+                            <div class="feature-point">
+                                <div class="point-number">03</div>
+                                <div>
+                                    <h5>Technical Limits</h5>
+                                    <p>CNNs lack global context, Transformers are expensive.</p>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="feature-solution">
+                            <strong>Solution:</strong> AC-Net bridges performance and efficiency.
+                        </div>
+                    </div>
+        
+                    <!-- Technology Card -->
+                    <div class="about-feature-card">
+                        <div class="feature-header">
+                            
+                            <h3>Technology</h3>
+                        </div>
+        
+                        <div class="tech-features-grid">
+                            <div class="tech-feature-item">
+                                <div class="tech-icon">🧠</div>
+                                <h5>U-Net Backbone</h5>
+                                <p>Preserves spatial resolution.</p>
+                            </div>
+        
+                            <div class="tech-feature-item">
+                                <div class="tech-icon">⚡</div>
+                                <h5>Hybrid Attention</h5>
+                                <p>AAM + VTM for global context.</p>
+                            </div>
+        
+                            <div class="tech-feature-item">
+                                <div class="tech-icon">🔄</div>
+                                <h5>Transfer Learning</h5>
+                                <p>LiTS 2017 + Clinical data.</p>
+                            </div>
+        
+                            <div class="tech-feature-item">
+                                <div class="tech-icon">📊</div>
+                                <h5>32% Cost Reduction</h5>
+                                <p>Optimized for real hospitals.</p>
+                            </div>
+                        </div>
+                    </div>
+        
+                </div>
+            </div>
+        
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='images/logof.png') }}" alt="Logo">
+                    </div>
+                    <div class="footer-text">
+                        <h3 class="footer-title">Liver Tumor Segmentation</h3>
+                        <p class="footer-tagline">AI-powered medical image segmentation for accurate diagnosis</p>
+                    </div>
+                </div>
+                <div class="footer-info">
+                    <div class="footer-column">
+                        <h4>Technology</h4>
+                        <p>Deep Learning</p>
+                        <p>Computer Vision</p>
+                        <p>Medical AI</p>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Features</h4>
+                        <p>Fast Processing</p>
+                        <p>High Accuracy</p>
+                        <p>Secure & Private</p>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <p>Documentation</p>
+                        <p>Research Use</p>
+                        <p>Educational</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-disclaimer">© 2024 Liver Tumor Segmentation Tool. For educational and research use only. </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

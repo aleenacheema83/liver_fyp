@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+uploads/
+results/
+
+*.pth
+*.pt
+*.h5
+*.rar
+
+.ipynb_checkpoints/
